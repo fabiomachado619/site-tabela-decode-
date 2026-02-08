@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Database, Cpu, HardDrive, Car, Info, PenTool, Monitor, ShoppingCart, ExternalLink, Facebook, Instagram, Youtube, MessageCircle, Download, X, Share } from 'lucide-react';
+import { Search, Database, Cpu, HardDrive, Car, Info, PenTool, Monitor, ShoppingCart, ExternalLink, Facebook, Instagram, Youtube } from 'lucide-react';
+import InstallPWA from './components/InstallPWA';
 
 // ==================================================================================
 // ARQUIVO CENTRAL: links_compra.js
@@ -130,143 +131,17 @@ const LINKS_COMPRA = {
 
 // Ícone do WhatsApp customizado
 const WhatsAppIcon = ({ className }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="currentColor" 
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
     className={className}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
   </svg>
 );
 
-// ==================================================================================
-// PWA INSTALL POPUP – POWER ON
-// Componente responsável por gerenciar a instalação do aplicativo
-// ==================================================================================
-const InstallPWA = () => {
-  const [supportsPWA, setSupportsPWA] = useState(false);
-  const [promptInstall, setPromptInstall] = useState(null);
-  const [isIOS, setIsIOS] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
 
-  useEffect(() => {
-    // Detectar iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    setIsIOS(isIOSDevice);
-
-    // Gerenciar beforeinstallprompt (Android/Desktop)
-    const handler = (e) => {
-      e.preventDefault();
-      setSupportsPWA(true);
-      setPromptInstall(e);
-    };
-
-    window.addEventListener('beforeinstallprompt', handler);
-
-    // Verificar se já foi descartado recentemente
-    const dismissedTimestamp = localStorage.getItem('pwaDismissed');
-    const now = Date.now();
-    const daysSinceDismissed = dismissedTimestamp 
-      ? (now - parseInt(dismissedTimestamp)) / (1000 * 60 * 60 * 24) 
-      : 8;
-
-    // Timer para mostrar o popup (5 segundos)
-    if (daysSinceDismissed > 7) {
-      const timer = setTimeout(() => {
-        if (isIOSDevice || supportsPWA) { // Só mostra se for instalável ou iOS
-          setShowPopup(true);
-        }
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, [supportsPWA]); // Dependência atualizada para reavaliar quando supportsPWA muda
-
-  // Efeito adicional para garantir que o popup apareça no Android/Desktop
-  // mesmo se o evento beforeinstallprompt disparar depois do timer
-  useEffect(() => {
-    if (supportsPWA && !localStorage.getItem('pwaDismissed')) {
-       // Se o evento já chegou e não estamos mostrando, mostre (respeitando o delay inicial se necessário, mas simplificando aqui para garantir visibilidade)
-       // O timer acima já cuida do delay inicial.
-       // Este efeito é apenas para garantir que se o evento demorar mais que 5s, o popup apareça assim que possível?
-       // Não, o melhor é deixar o timer controlar o 'start', e este efeito apenas habilitar a possibilidade.
-       // Vamos confiar na lógica do primeiro useEffect + re-render quando supportsPWA muda.
-    }
-  }, [supportsPWA]);
-
-
-  const handleInstall = (e) => {
-    e.preventDefault();
-    if (promptInstall) {
-      promptInstall.prompt();
-      promptInstall.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          // Usuário aceitou, pode esconder o popup permanentemente ou temporariamente
-          setShowPopup(false);
-        }
-      });
-    }
-  };
-
-  const handleDismiss = () => {
-    setShowPopup(false);
-    localStorage.setItem('pwaDismissed', Date.now().toString());
-  };
-
-  if (!showPopup) return null;
-  // Não mostrar se não houver evento (exceto iOS)
-  if (!isIOS && !supportsPWA) return null; 
-
-  return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-white rounded-xl shadow-2xl border border-slate-200 p-5 z-50 animate-in slide-in-from-bottom-5 fade-in duration-500">
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center gap-3">
-          <div className="bg-slate-900 p-2 rounded-lg">
-            <Database className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h3 className="font-bold text-slate-800">Instale o Power ON</h3>
-            <p className="text-xs text-slate-500">Tabela Técnica Offline</p>
-          </div>
-        </div>
-        <button onClick={handleDismiss} className="text-slate-400 hover:text-slate-600">
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-      
-      <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-        {isIOS 
-          ? "Instale agora e tenha acesso rápido a essas informações sempre que precisar. Toque em Compartilhar e depois em 'Adicionar à Tela de Início'." 
-          : "Instale agora e tenha acesso rápido a essas informações sempre que precisar, mesmo com conexão instável."}
-      </p>
-
-      {isIOS ? (
-        <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 bg-blue-50 p-3 rounded-lg">
-          <Share className="w-4 h-4" />
-          <span>Toque em Compartilhar <span className="mx-1">→</span> Tela de Início</span>
-        </div>
-      ) : (
-        <div className="flex gap-3">
-          <button 
-            onClick={handleDismiss}
-            className="flex-1 px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-          >
-            Agora não
-          </button>
-          <button 
-            onClick={handleInstall}
-            className="flex-1 px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all flex items-center justify-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Instalar
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
 
 const DatabaseApp = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -274,15 +149,18 @@ const DatabaseApp = () => {
 
   // <!-- META PIXEL POWER ON -->
   useEffect(() => {
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+
     window.fbq('init', '1356826896446202');
     window.fbq('track', 'PageView');
   }, []);
@@ -439,7 +317,7 @@ const DatabaseApp = () => {
   const filteredData = useMemo(() => {
     return fullData.filter(item => {
       const matchesBrand = selectedBrand === 'TODAS' || item.brand === selectedBrand;
-      const matchesSearch = 
+      const matchesSearch =
         item.system.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.memory.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.equip.toLowerCase().includes(searchTerm.toLowerCase());
@@ -485,7 +363,7 @@ const DatabaseApp = () => {
                 <p className="text-slate-400 text-sm">A Tecnologia em Suas Mãos - Tabela de Decodificação 2024</p>
               </div>
             </div>
-            
+
             {/* Search Bar */}
             <div className="relative w-full md:w-96">
               <input
@@ -503,7 +381,7 @@ const DatabaseApp = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        
+
         {/* Brand Filter Tabs */}
         <div className="mb-8 overflow-x-auto pb-2">
           <div className="flex space-x-2 min-w-max">
@@ -512,8 +390,8 @@ const DatabaseApp = () => {
                 key={brand}
                 onClick={() => setSelectedBrand(brand)}
                 className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-200 flex items-center gap-2
-                  ${selectedBrand === brand 
-                    ? 'bg-blue-600 text-white shadow-md transform scale-105' 
+                  ${selectedBrand === brand
+                    ? 'bg-blue-600 text-white shadow-md transform scale-105'
                     : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
                   }`}
               >
@@ -553,24 +431,24 @@ const DatabaseApp = () => {
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
                 {filteredData.map((row, index) => (
-                  <tr 
-                    key={`${row.system}-${index}`} 
+                  <tr
+                    key={`${row.system}-${index}`}
                     className="hover:bg-blue-50 transition-colors duration-150 group"
                   >
                     <td className="p-4 font-bold text-slate-700">{row.brand}</td>
                     <td className="p-4 font-bold text-blue-700 bg-blue-50/50 rounded-r-lg">{row.system}</td>
                     <td className="p-4 text-center">
                       <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium border
-                        ${row.original.includes('SIM') 
-                          ? 'bg-green-100 text-green-800 border-green-200' 
+                        ${row.original.includes('SIM')
+                          ? 'bg-green-100 text-green-800 border-green-200'
                           : 'bg-red-100 text-red-800 border-red-200'}`}>
                         {row.original}
                       </span>
                     </td>
                     <td className="p-4 text-center">
                       <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium border
-                        ${row.off.includes('SIM') 
-                          ? 'bg-green-100 text-green-800 border-green-200' 
+                        ${row.off.includes('SIM')
+                          ? 'bg-green-100 text-green-800 border-green-200'
                           : 'bg-red-100 text-red-800 border-red-200'}`}>
                         {row.off}
                       </span>
@@ -593,9 +471,9 @@ const DatabaseApp = () => {
                         {row.memory}
                       </div>
                     </td>
-                     {/* Nova Coluna: Adquirir */}
-                     <td className="p-4 text-center">
-                      <button 
+                    {/* Nova Coluna: Adquirir */}
+                    <td className="p-4 text-center">
+                      <button
                         onClick={() => handlePurchaseClick(row)}
                         className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm active:transform active:scale-95"
                       >
@@ -609,7 +487,7 @@ const DatabaseApp = () => {
               </tbody>
             </table>
           </div>
-          
+
           {filteredData.length === 0 && (
             <div className="p-12 text-center text-slate-400">
               <Info className="w-12 h-12 mx-auto mb-3 opacity-50" />
@@ -622,35 +500,35 @@ const DatabaseApp = () => {
 
       <footer className="bg-white border-t border-slate-200 mt-auto">
         <div className="container mx-auto px-4 py-8 text-center">
-          
+
           {/* Seção de Redes Sociais e Contato */}
           <div className="mb-8">
             <p className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-6">Nos siga nas redes sociais</p>
-            
+
             <div className="flex flex-col md:flex-row justify-center items-center gap-8">
               {/* Ícones Sociais */}
               <div className="flex justify-center items-center gap-8">
-                <a 
-                  href="https://www.facebook.com/lojadomecatronicopoweron" 
-                  target="_blank" 
+                <a
+                  href="https://www.facebook.com/lojadomecatronicopoweron"
+                  target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
                   className="text-blue-600 hover:text-blue-700 transition-all duration-200 transform hover:scale-110 drop-shadow-sm"
                 >
                   <Facebook className="w-8 h-8" />
                 </a>
-                <a 
-                  href="https://www.instagram.com/loja_mecatronica_power_on/" 
-                  target="_blank" 
+                <a
+                  href="https://www.instagram.com/loja_mecatronica_power_on/"
+                  target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
                   className="text-pink-600 hover:text-pink-700 transition-all duration-200 transform hover:scale-110 drop-shadow-sm"
                 >
                   <Instagram className="w-8 h-8" />
                 </a>
-                <a 
-                  href="https://www.youtube.com/@fabiomachado_powerOn" 
-                  target="_blank" 
+                <a
+                  href="https://www.youtube.com/@fabiomachado_powerOn"
+                  target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
                   className="text-red-600 hover:text-red-700 transition-all duration-200 transform hover:scale-110 drop-shadow-sm"
@@ -663,9 +541,9 @@ const DatabaseApp = () => {
               <div className="hidden md:block w-px h-8 bg-slate-300"></div>
 
               {/* Botão de WhatsApp */}
-              <a 
+              <a
                 href={whatsAppUrl}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackPixel('Contact', { method: 'whatsapp' })}
                 className="inline-flex items-center gap-3 bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-3 rounded-full font-bold shadow-lg transition-all transform hover:scale-105"
