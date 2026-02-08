@@ -9,7 +9,7 @@ import InstallPWA from './components/InstallPWA';
 const LINKS_COMPRA = {
   // VOLKSWAGEN
   "1AVI": "https://chatgpt.com/c/6987edd7-74bc-8327-9011-52938956e615",
-  "1AVP": "COLE_AQUI_O_LINK_DO_MODULO_1AVP",
+  "1AVP": "https://mercadolivre.com/sec/1T398i9",
   "MP9": "COLE_AQUI_O_LINK_DO_MODULO_MP9",
   "3.8.2": "COLE_AQUI_O_LINK_DO_MODULO_3.8.2",
   "3.8.3": "COLE_AQUI_O_LINK_DO_MODULO_3.8.3",
