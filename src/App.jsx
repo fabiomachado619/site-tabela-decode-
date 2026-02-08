@@ -10,7 +10,7 @@ const LINKS_COMPRA = {
   // VOLKSWAGEN
   "1AVI": "https://chatgpt.com/c/6987edd7-74bc-8327-9011-52938956e615",
   "1AVP": "https://mercadolivre.com/sec/1T398i9",
-  "MP9": "COLE_AQUI_O_LINK_DO_MODULO_MP9",
+  "MP9": "https://mercadolivre.com/sec/2caTaTT",
   "3.8.2": "COLE_AQUI_O_LINK_DO_MODULO_3.8.2",
   "3.8.3": "COLE_AQUI_O_LINK_DO_MODULO_3.8.3",
   "5.9.2": "COLE_AQUI_O_LINK_DO_MODULO_5.9.2",
